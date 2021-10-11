@@ -22,7 +22,7 @@ contract('UpgradeContract', async payloadAccounts => {
 
 
   contract('Registration', () => {
-    it('reverts non-deployer attempt to register user', async() => {
+    it('reverts non-deployer attempt to register employee', async() => {
       const REVERT_MSG = 'Returned error: VM Exception while processing transaction: revert caller not owner -- Reason given: caller not owner.'
       const alpha1 = 'alpha1'
 
@@ -35,12 +35,29 @@ contract('UpgradeContract', async payloadAccounts => {
     })
 
 
-    it('allows user registration by deployer', async () => {
+    it('Registers employee, adds sale and employee\'s bonus', async () => {
       const alpha1 = 'alpha1'
+      const alpha2 = 'alpha2'
       await upgradeContract.registerEmployee(alpha1, true, addr1, {from: deployer})
+      await upgradeContract.registerEmployee(alpha2, true, addr2, {from: deployer})
       const employeeRegistrationStatus = await upgradeContract.isEmployeeRegistered(alpha1)
-      assert.isTrue(employeeRegistrationStatus)
+      const employeeRegistrationStatus2 = await upgradeContract.isEmployeeRegistered(alpha1)
 
+      assert.isTrue(employeeRegistrationStatus)
+      assert.isTrue(employeeRegistrationStatus2)
+      const sale = 500
+      const sale2 = 200
+      await upgradeContract.addSale(alpha1, sale, {from: deployer})
+      const bonus = await upgradeContract.getEmployeeBonus(alpha1)
+      console.log({'bonus ': bonus})
+      
+      await assert.equal(bonus.toNumber(), 50)
+      
+      await upgradeContract.addSale(alpha1, sale2, {from: deployer})
+      const bonus2 = await upgradeContract.getEmployeeBonus(alpha1)
+      const finalBonus = 50 + 14
+      console.log({'bonus ': bonus2})
+      assert.equal(bonus2.toNumber(), finalBonus)
     })
   })
 

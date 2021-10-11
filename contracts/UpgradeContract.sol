@@ -32,6 +32,9 @@ contract UpgradeContract {
   /*                        EVENTS                           */
   /**********************************************************************/
 
+  event LogRegistered(address indexed account);
+  event LogSaleAdded(string id, uint256 sales, uint256 bonus);
+
 
   /**
   * @dev Constructor 
@@ -67,6 +70,8 @@ contract UpgradeContract {
       bonus: 0,
       wallet: _account
     });
+
+    emit LogRegistered(_account);
   }
 
   function _updateEmployee(string memory _id, uint256 _sales, uint _bonus) private onlyOwner {
@@ -76,7 +81,7 @@ contract UpgradeContract {
   }
 
 
-  function calculateBonus(uint256 _sales) public pure returns(uint) {
+  function _calculateBonus(uint256 _sales) private pure returns(uint) {
     if(_sales < 100) {
      return _sales.mul(5).div(100);
     } else if(_sales >= 100 && _sales < 500 ) {
@@ -87,9 +92,17 @@ contract UpgradeContract {
   }
 
   function addSale(string memory _id, uint256 _amount) external onlyOwner {
-    uint256 updatedBonus = calculateBonus(_amount);
-    _updateEmployee(_id, _amount, updatedBonus);
+    uint256 accumulatedBonus;
+    uint256 bonusResult = _calculateBonus(_amount);
+    employees[_id].bonus = employees[_id].bonus.add(bonusResult);
+    accumulatedBonus = employees[_id].bonus;
+    _updateEmployee(_id, _amount, accumulatedBonus);
+    emit LogSaleAdded(_id, _amount, accumulatedBonus);
   }
+
+
+    
+
 
 
 
@@ -111,8 +124,4 @@ contract UpgradeContract {
   function getEmployeeBonus(string memory _id) public view returns(uint employeeBonus) {
     return employeeBonus = employees[_id].bonus;
   }
-
-
-
-
 }
