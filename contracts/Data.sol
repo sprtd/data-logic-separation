@@ -7,7 +7,7 @@ import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 
 
-contract UpgradeContract {
+contract Data {
 
   using SafeMath for uint256; // Allow SafeMath to be called for all uint256 types
 
@@ -31,9 +31,8 @@ contract UpgradeContract {
   /**********************************************************************/
   /*                        EVENTS                           */
   /**********************************************************************/
-
   event LogRegistered(address indexed account);
-  event LogSaleAdded(string id, uint256 sales, uint256 bonus);
+  
 
 
   /**
@@ -74,35 +73,14 @@ contract UpgradeContract {
     emit LogRegistered(_account);
   }
 
-  function _updateEmployee(string memory _id, uint256 _sales, uint _bonus) private onlyOwner {
+  function updateEmployee(string memory _id, uint256 _sales, uint _bonus) external {
     require(employees[_id].isRegistered, 'employee not registered');
     employees[_id].sales = _sales;
-    employees[_id].bonus = _bonus;
-  }
-
-
-  function _calculateBonus(uint256 _sales) private pure returns(uint) {
-    if(_sales < 100) {
-     return _sales.mul(5).div(100);
-    } else if(_sales >= 100 && _sales < 500 ) {
-     return _sales.mul(7).div(100);
-    } else {
-     return _sales.mul(10).div(100);
-    }
-  }
-
-  function addSale(string memory _id, uint256 _amount) external onlyOwner {
-    uint256 accumulatedBonus;
-    uint256 bonusResult = _calculateBonus(_amount);
-    employees[_id].bonus = employees[_id].bonus.add(bonusResult);
-    accumulatedBonus = employees[_id].bonus;
-    _updateEmployee(_id, _amount, accumulatedBonus);
-    emit LogSaleAdded(_id, _amount, accumulatedBonus);
-  }
-
-
+    uint256 currentBonus =  employees[_id].bonus;
     
+    employees[_id].bonus = currentBonus.add(_bonus);
 
+  }
 
 
 
@@ -124,4 +102,8 @@ contract UpgradeContract {
   function getEmployeeBonus(string memory _id) public view returns(uint employeeBonus) {
     return employeeBonus = employees[_id].bonus;
   }
+
+
+
+
 }
