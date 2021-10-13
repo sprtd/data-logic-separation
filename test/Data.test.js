@@ -64,12 +64,12 @@ contract('Data Contract', async payloadAccounts => {
         assert.isTrue(employeeRegistrationStatus)
         assert.isTrue(employeeRegistrationStatus2)
   
-        // truffleAssert.eventEmitted(registerEmployee1, 'LogRegistered', ev => {
-        //   return ev.account === addr1
-        // })
-        // truffleAssert.eventEmitted(registerEmployee2, 'LogRegistered', ev => {
-        //   return ev.account === addr2
-        // })
+        truffleAssert.eventEmitted(registerEmployee1, 'LogRegistered', ev => {
+          return ev.account === addr1
+        })
+        truffleAssert.eventEmitted(registerEmployee2, 'LogRegistered', ev => {
+          return ev.account === addr2
+        })
        
       })
 

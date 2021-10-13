@@ -14,14 +14,9 @@ contract AppLogic {
     
     DataLogic dataLogic;
     address contractOwner; 
-    
-    
-    
-   
-
-
+  
   /**********************************************************************/
-  /*                        DATA VARIABLES                             */
+  /*                        Data Variables                            */
   /**********************************************************************/
   
     constructor(address dataAddress) {
@@ -31,7 +26,7 @@ contract AppLogic {
   }
 
   /**********************************************************************/
-  /*                        FUNCTION MODIFIERS                          */
+  /*                        Function Modifiers                         */
   /**********************************************************************/
   
   modifier onlyOwner() {
@@ -41,7 +36,7 @@ contract AppLogic {
   
   
    /**********************************************************************/
-  /*                        EVENTS                           */
+  /*                        Events                        */
   /**********************************************************************/
 
     event LogSaleAdded(string id, uint256 sales, uint256 bonus);
@@ -58,23 +53,19 @@ contract AppLogic {
   }
 
   function addSale(string memory _id, uint256 _amount) external onlyOwner {
-  
     uint256 bonusResult = _calculateBonus(_amount);
-    
     dataLogic.updateEmployee(_id, _amount, bonusResult);
-  
-    // console.log("accumulatedBonus %s", accumulatedBonus);
     emit LogSaleAdded(_id, _amount, bonusResult);
    
-  }
-
-
-
- 
+  } 
 }
 
 
 
+
+  /**********************************************************************/
+  /*                       DataLogic Interface                          */
+  /**********************************************************************/
 
 interface DataLogic {
     function  updateEmployee(string memory _id, uint256 _sales, uint _bonus) external;

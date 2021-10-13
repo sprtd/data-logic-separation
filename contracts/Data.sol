@@ -75,10 +75,11 @@ contract Data {
 
   function updateEmployee(string memory _id, uint256 _sales, uint _bonus) external {
     require(employees[_id].isRegistered, 'employee not registered');
-    employees[_id].sales = _sales;
     uint256 currentBonus =  employees[_id].bonus;
+    uint256 currentSales = employees[_id].sales;
     
     employees[_id].bonus = currentBonus.add(_bonus);
+    employees[_id].sales = currentSales.add(_sales);
 
   }
 
@@ -101,6 +102,11 @@ contract Data {
 
   function getEmployeeBonus(string memory _id) public view returns(uint employeeBonus) {
     return employeeBonus = employees[_id].bonus;
+  }
+
+  function getEmployeeSales(string memory _id) public view returns(uint employeeSales) {
+    return employeeSales = employees[_id].sales;
+
   }
 
 
